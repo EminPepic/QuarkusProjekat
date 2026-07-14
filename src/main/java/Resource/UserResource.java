@@ -1,6 +1,7 @@
 package Resource;
 
 import Service.UserService;
+import dto.UserRegistrationRequest;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
@@ -21,8 +22,8 @@ public class UserResource {
 
     @POST
     @Path("/add")
-    public User createUser(User user){
-        return userService.createUser(user);
+    public User createUser(UserRegistrationRequest request){
+        return userService.createUser(request);
     }
 
     @GET 
@@ -30,6 +31,5 @@ public class UserResource {
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
-    
 
 }
