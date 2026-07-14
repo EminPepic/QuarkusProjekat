@@ -1,5 +1,7 @@
 package Service;
 
+import java.util.List;
+
 import Klase.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -20,6 +22,9 @@ public class UserService {
         return user;
     }
 
+    public List<User> getAllUsers(){
+        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+    }
 
 
 }

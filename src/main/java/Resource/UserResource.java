@@ -6,6 +6,9 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.*;
+
+import java.util.List;
+
 import Klase.User;
 
 @Path("/users")
@@ -21,5 +24,12 @@ public class UserResource {
     public User createUser(User user){
         return userService.createUser(user);
     }
+
+    @GET 
+    @Path("/getAll")
+    public List<User> getAllUsers(){
+        return userService.getAllUsers();
+    }
+    
 
 }
