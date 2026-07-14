@@ -1,5 +1,7 @@
 package Service;
 
+import java.util.List;
+
 import Klase.Trainer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -20,5 +22,8 @@ public class TrainerService {
         return trainer;
     }
 
+    public List<Trainer> getAllTrainers(){
+        return entityManager.createQuery("SELECT t FROM Trainer t", Trainer.class).getResultList();
+    }
     
 }
