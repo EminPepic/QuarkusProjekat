@@ -31,8 +31,5 @@ public class TrainerResource {
     public List<Trainer> getAllTrainers(){
         return trainerService.getAllTrainers();
     }
-
-    
-
     
 }

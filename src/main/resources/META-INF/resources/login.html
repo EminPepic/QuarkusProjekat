@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gym Login</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-dark: #16a34a;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #020617, #0f172a 55%, #111827);
+      color: var(--text);
+    }
+    .card {
+      width: min(420px, 92vw);
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { margin: 0 0 24px; color: var(--muted); }
+    label { display: block; margin: 14px 0 6px; font-size: 14px; }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0b1220;
+      color: var(--text);
+      outline: none;
+    }
+    input:focus { border-color: var(--accent); }
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #052e16;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover { background: var(--accent-dark); color: white; }
+    .msg {
+      margin-top: 16px;
+      min-height: 20px;
+      font-size: 14px;
+    }
+    .success { color: #4ade80; }
+    .error { color: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Login</h1>
+    <p>Unesi username i password.</p>
+    <form id="loginForm">
+      <label for="username">Username</label>
+      <input id="username" name="username" autocomplete="username" required />
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required />
+
+      <button type="submit">Sign in</button>
+    </form>
+    <div id="message" class="msg"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = 'Checking...';
+      message.className = 'msg';
+
+      const payload = {
+        username: document.getElementById('username').value.trim(),
+        password: document.getElementById('password').value.trim()
+      };
+
+      try {
+        const url = 'http://localhost:8080/users/exists?username=' + encodeURIComponent(payload.username) + '&password=' + encodeURIComponent(payload.password);
+        const response = await fetch(url, { method: 'GET' });
+
+        if (response.status === 200) {
+          const data = await response.json();
+
+          if (data.role === 'trainer') {
+            window.location.href = 'trainer.html';
+            return;
+          }
+
+          if (data.role === 'client') {
+            window.location.href = 'klijent.html';
+            return;
+          }
+
+          message.textContent = 'Nepoznata uloga korisnika.';
+          message.className = 'msg error';
+          return;
+        }
+
+        if (response.status === 401) {
+          message.textContent = 'Pogresan username ili password.';
+          message.className = 'msg error';
+          return;
+        }
+
+        message.textContent = 'Server error.';
+        message.className = 'msg error';
+      } catch (err) {
+        console.error('Login failed:', err);
+        message.textContent = 'Server error.';
+        message.className = 'msg error';
+      }
+    });
+  </script>
+</body>
+</html>

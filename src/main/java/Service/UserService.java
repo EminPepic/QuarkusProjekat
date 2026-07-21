@@ -10,6 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.QueryParam;
 
 @ApplicationScoped
 public class UserService {
@@ -68,4 +69,22 @@ public class UserService {
     public List<User> getAllUsers(){
         return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
+
+    public User getUserById(@QueryParam ("id") Long id){
+        return entityManager.find(User.class, id);
+    }
+
+    public User existsUser(String username, String password){
+        List<User> users = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username AND u.password = :password", User.class)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .getResultList();
+
+        if (users.isEmpty()) {
+            return null;
+        }
+
+        return users.get(0);
+    }
+    
 }
